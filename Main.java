@@ -1,22 +1,27 @@
-package questao2;
+package questao3;
 
 public class Main {
     public static void main(String[] args) {
-        int minutos = 95;
-        System.out.println("Tempo de permanência: " + minutos + " minutos\n");
+        Pedido p1 = new Pedido(new Espresso())
+                .adicionarComplemento(Leite::new)
+                .adicionarComplemento(Chantilly::new);
 
-        TarifaStrategy[] perfis = { new RotativoStrategy(), new MensalistaStrategy(), new ConveniadoStrategy() };
-        for (TarifaStrategy perfil : perfis) {
-            Ticket t = new Ticket("ABC1D23", minutos, perfil);
-            System.out.printf("%-10s -> R$ %.2f%n", t.getPerfil(), t.calcularValor());
-        }
+        Pedido p2 = new Pedido(new Cha())
+                .adicionarComplemento(Calda::new);
 
-        System.out.println("\n--- Troca de perfil no mesmo tíquete ---");
-        Ticket ticket = new Ticket("XYZ9K88", minutos, new RotativoStrategy());
-        System.out.printf("Inicial  (%s): R$ %.2f%n", ticket.getPerfil(), ticket.calcularValor());
-        ticket.setTarifa(new ConveniadoStrategy());
-        System.out.printf("Alterado (%s): R$ %.2f%n", ticket.getPerfil(), ticket.calcularValor());
-        ticket.setTarifa(new MensalistaStrategy());
-        System.out.printf("Alterado (%s): R$ %.2f%n", ticket.getPerfil(), ticket.calcularValor());
+        // Mesmo complemento repetido
+        Pedido p3 = new Pedido(new Espresso())
+                .adicionarComplemento(Leite::new)
+                .adicionarComplemento(Leite::new)
+                .adicionarComplemento(Calda::new);
+
+        imprimir(1, p1);
+        imprimir(2, p2);
+        imprimir(3, p3);
+    }
+
+    private static void imprimir(int numero, Item pedido) {
+        System.out.printf("Pedido %d: %s%n", numero, pedido.getDescricao());
+        System.out.printf("   Total: R$ %.2f%n%n", pedido.getPreco());
     }
 }
