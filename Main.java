@@ -1,31 +1,22 @@
-package questao1;
+package questao2;
 
 public class Main {
     public static void main(String[] args) {
-        Compras compras = new Compras();
-        Vendas vendas = new Vendas();
-        Auditoria auditoria = new Auditoria();
+        int minutos = 95;
+        System.out.println("Tempo de permanência: " + minutos + " minutos\n");
 
-        Produto notebook = new Produto("Notebook", 10);
-        notebook.adicionarArea(compras);
-        notebook.adicionarArea(vendas);
-        notebook.adicionarArea(auditoria);
+        TarifaStrategy[] perfis = { new RotativoStrategy(), new MensalistaStrategy(), new ConveniadoStrategy() };
+        for (TarifaStrategy perfil : perfis) {
+            Ticket t = new Ticket("ABC1D23", minutos, perfil);
+            System.out.printf("%-10s -> R$ %.2f%n", t.getPerfil(), t.calcularValor());
+        }
 
-        System.out.println("--- Alterações de estoque do Notebook ---");
-        notebook.alterarQuantidade(8);
-        notebook.alterarQuantidade(8);   // sem mudança: nada é comunicado
-        notebook.alterarQuantidade(3);   // Compras alerta (abaixo de 5)
-        notebook.alterarQuantidade(0);   // Compras alerta
-        notebook.alterarQuantidade(5);   // Vendas avisa que voltou ao estoque
-
-        System.out.println("--- Removendo a área Compras ---");
-        notebook.removerArea(compras);
-        notebook.alterarQuantidade(2);   // Compras não recebe mais nada
-
-        System.out.println("--- Outro produto ---");
-        Produto mouse = new Produto("Mouse", 0);
-        mouse.adicionarArea(vendas);
-        mouse.adicionarArea(compras);
-        mouse.alterarQuantidade(12);     // Vendas e Compras (sem alerta)
+        System.out.println("\n--- Troca de perfil no mesmo tíquete ---");
+        Ticket ticket = new Ticket("XYZ9K88", minutos, new RotativoStrategy());
+        System.out.printf("Inicial  (%s): R$ %.2f%n", ticket.getPerfil(), ticket.calcularValor());
+        ticket.setTarifa(new ConveniadoStrategy());
+        System.out.printf("Alterado (%s): R$ %.2f%n", ticket.getPerfil(), ticket.calcularValor());
+        ticket.setTarifa(new MensalistaStrategy());
+        System.out.printf("Alterado (%s): R$ %.2f%n", ticket.getPerfil(), ticket.calcularValor());
     }
 }
